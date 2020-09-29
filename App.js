@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import AddTodos from './components/AddTodos';
+import Header from './components/Header';
+import TodosItem from './components/TodosItem';
 
 export default function App() {
   const [todos , setTodos] = useState([
@@ -12,22 +15,37 @@ export default function App() {
   ]);
 
   const pressHandler = (id) => {
-    setTodos((prevPeople)=> {
-      return prevPeople.filter((person)=>(person.id != id))
+    setTodos((prevTodos)=> {
+      return prevTodos.filter((todo)=>(todo.id != id))
+    })
+  }
+
+  const submitHandler = (text) => {
+    setTodos((prevTodos) => {
+      return [
+        {text: text, id: Math.random().toString()},
+        ...prevTodos
+      ];
     })
   }
   
   return (
     <View style={styles.container}>
-      <FlatList
-        keyExtractor={ (item) => item.id}
-        data={todos}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={()=> pressHandler(item.id)}>
-            <Text style={styles.text}>{item.text}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      {/* Header */}
+      <Header/>
+        <View style={styles.content}>
+        {/* to form */}
+        <AddTodos submitHandler ={submitHandler}/>
+          <View style={styles.list}>
+            <FlatList
+              keyExtractor={ (item) => item.id}
+              data={todos}
+              renderItem={({item}) => (
+                <TodosItem item={item} pressHandler={pressHandler} />
+              )}
+            />
+          </View>
+        </View>
 
       {/* <ScrollView>
         {people.map(item => (
@@ -44,20 +62,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop:40,
-    paddingHorizontal:4,
     // alignItems: 'center',
     // justifyContent: 'center',
   },
   list: {
-    backgroundColor:'pink',
-    padding:20,
-    marginTop:20,
+    paddingHorizontal:40,
   },
-  text:{
-    fontSize:24,
-    backgroundColor:'pink',
-    padding:20,
-    margin:20,
+  content:{
+    marginTop:10,
   },
 });
