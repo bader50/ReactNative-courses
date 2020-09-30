@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AddTodos from './components/AddTodos';
 import Header from './components/Header';
 import TodosItem from './components/TodosItem';
@@ -21,40 +21,53 @@ export default function App() {
   }
 
   const submitHandler = (text) => {
-    setTodos((prevTodos) => {
-      return [
-        {text: text, id: Math.random().toString()},
-        ...prevTodos
-      ];
-    })
+    
+    if (text.length > 3) {
+      setTodos((prevTodos) => {
+        return [
+          {text: text, id: Math.random().toString()},
+          ...prevTodos
+        ];
+      })
+    } else {
+      Alert.alert(title="OOPS!!", message="Todos must contains at least 3 caracters", 
+      [{text:"Understood", onPress:(() => console.log("console closed"))},])
+    }
+
+    
   }
   
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Header/>
-        <View style={styles.content}>
-        {/* to form */}
-        <AddTodos submitHandler ={submitHandler}/>
-          <View style={styles.list}>
-            <FlatList
-              keyExtractor={ (item) => item.id}
-              data={todos}
-              renderItem={({item}) => (
-                <TodosItem item={item} pressHandler={pressHandler} />
-              )}
-            />
+    <TouchableWithoutFeedback onPress={()=>{
+      Keyboard.dismiss();
+      console.log("dismiss keyboard")
+    }}>
+      <View style={styles.container}>
+        {/* Header */}
+        <Header/>
+          <View style={styles.content}>
+          {/* to form */}
+          <AddTodos submitHandler ={submitHandler}/>
+            <View style={styles.list}>
+              <FlatList
+                keyExtractor={ (item) => item.id}
+                data={todos}
+                renderItem={({item}) => (
+                  <TodosItem item={item} pressHandler={pressHandler} />
+                )}
+              />
+            </View>
           </View>
-        </View>
 
-      {/* <ScrollView>
-        {people.map(item => (
-          <View key={item.key} style={styles.list}>
-            <Text style={styles.text}>{item.name}</Text>
-          </View>
-        ))}
-      </ScrollView> */}
-    </View>
+        {/* <ScrollView>
+          {people.map(item => (
+            <View key={item.key} style={styles.list}>
+              <Text style={styles.text}>{item.name}</Text>
+            </View>
+          ))}
+        </ScrollView> */}
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
