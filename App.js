@@ -79,9 +79,11 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   list: {
+    flex: 1,
     paddingHorizontal:40,
   },
   content:{
+    flex:1,
     marginTop:10,
   },
 });
